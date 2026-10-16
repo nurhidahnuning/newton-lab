@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEWTON LAB — Jelajahi Hukum Newton II | SMAN 6 Muaro Jambi</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX CSS & JS Engine -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0B132B',
+                            navy: '#1C2541',
+                            blue: '#3A506B',
+                            cyan: '#00F5D4',
+                            bright: '#00BBF9',
+                            card: '#111D4A',
+                            lightBg: '#F8FAFC',
+                            textDark: '#0F172A'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B132B;
+            color: #F8FAFC;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glow-cyan {
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.4);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1C2541;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3A506B;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #00F5D4;
+        }
+
+        /* Print styles for A4 Report */
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .lkpd-print-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                color: black !important;
+                background: white !important;
+            }
+            .lkpd-card {
+                border: 1px solid #ccc !important;
+                background: #fff !important;
+                color: #000 !important;
+                box-shadow: none !important;
+            }
+            input, textarea {
+                border: 1px solid #999 !important;
+                color: #000 !important;
+                background: #fff !important;
+            }
+        }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            accent-color: #00F5D4;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            height: 8px;
+            background: #3A506B;
+            border-radius: 4px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #00F5D4;
+            margin-top: -6px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0,245,212,0.8);
+        }
+        
+        .katex {
+            font-size: 1.05em !important;
+        }
+        .katex-display {
+            margin: 0.5em 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 4px 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between custom-scrollbar selection:bg-brand-cyan selection:text-brand-dark">
+
+    <!-- TOP NAVBAR -->
+    <header id="app-header" class="hidden sticky top-0 z-50 bg-brand-navy/90 backdrop-blur-md border-b border-brand-blue/40 px-4 py-3 no-print">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('dashboard')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-cyan to-brand-bright flex items-center justify-center text-brand-dark font-extrabold text-xl shadow-lg">
+                    N2
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-white tracking-wide">NEWTON LAB</h1>
+                    <p class="text-xs text-brand-cyan">SMAN 6 Muaro Jambi • XI SMA</p>
+                </div>
+            </div>
+
+            <!-- Student Profile Badge & Progress & Teacher Access -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="hidden lg:flex items-center bg-brand-dark/80 border border-brand-cyan/40 rounded-xl px-3 py-1.5 text-xs">
+                    <i class="fa-solid fa-user-graduate text-brand-cyan mr-2"></i>
+                    <div>
+                        <p id="nav-student-name" class="font-bold text-white leading-none">Nama Siswa</p>
+                        <p id="nav-student-class" class="text-[10px] text-gray-400 leading-tight">Kelas / Kode</p>
+                    </div>
+                </div>
+
+                <div class="hidden sm:flex items-center bg-brand-dark/60 border border-brand-blue/50 rounded-full px-3 py-1 text-xs">
+                    <span class="text-gray-400 mr-2">Progres:</span>
+                    <div class="w-16 bg-brand-navy rounded-full h-2 mr-2 overflow-hidden">
+                        <div id="header-progress-bar" class="bg-brand-cyan h-full w-0 transition-all duration-300"></div>
+                    </div>
+                    <span id="header-progress-text" class="text-brand-cyan font-bold">0%</span>
+                </div>
+
+                <!-- MENU GURU / TEACHER DASHBOARD BUTTON IN HEADER -->
+                <button type="button" onclick="openTeacherAuthModal()" class="flex items-center space-x-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-brand-dark font-extrabold text-xs px-3 py-2 rounded-xl transition shadow-lg border border-amber-300">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>Menu Guru</span>
+                </button>
+
+                <button type="button" onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-white p-2 rounded-lg bg-brand-blue/30 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+
+                <button onclick="navigateTo('dashboard')" class="hidden md:flex items-center space-x-2 bg-brand-blue/40 hover:bg-brand-blue text-white text-xs px-3 py-2 rounded-lg transition border border-brand-blue/60">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden mt-3 pt-3 border-t border-brand-blue/40 grid grid-cols-2 gap-2 text-xs">
+            <button type="button" onclick="navigateTo('misi1')" class="p-2 text-left bg-brand-dark/50 rounded hover:bg-brand-blue/50">1. Fenomena Nyata</button>
+            <button type="button" onclick="navigateTo('misi2')" class="p-2 text-left bg-brand-dark/50 rounded hover:bg-brand-blue/50">2. Petualangan Konsep</button>
+            <button type="button" onclick="navigateTo('simulasi')" class="p-2 text-left bg-brand-dark/50 rounded hover:bg-brand-blue/50 text-brand-cyan font-semibold">3. Lab Gaya & Gerak</button>
+            <button type="button" onclick="navigateTo('soal')" class="p-2 text-left bg-brand-dark/50 rounded hover:bg-brand-blue/50">4. Contoh Soal</button>
+            <button type="button" onclick="navigateTo('game')" class="p-2 text-left bg-brand-dark/50 rounded hover:bg-brand-blue/50">5. Newton Challenge</button>
+            <button type="button" onclick="navigateTo('lkpd')" class="p-2 text-left bg-brand-dark/50 rounded hover:bg-brand-blue/50">6. LKPD Digital</button>
+            <button type="button" onclick="navigateTo('kuis')" class="p-2 text-left bg-brand-dark/50 rounded hover:bg-brand-blue/50">7. Kuis Interaktif</button>
+            <button type="button" onclick="navigateTo('evaluasi')" class="p-2 text-left bg-brand-dark/50 rounded hover:bg-brand-blue/50">8. Evaluasi & Refleksi</button>
+            <button type="button" onclick="openTeacherAuthModal()" class="col-span-2 p-2 text-center bg-amber-500 text-brand-dark font-bold rounded">🔑 Akses Guru (Ibu Nurhidah)</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow flex flex-col justify-center items-center p-3 sm:p-6 max-w-7xl mx-auto w-full">
+
+        <!-- 0. LANDING SCREEN PAGE WITH STUDENT INITIAL FORM -->
+        <section id="page-landing" class="w-full flex flex-col items-center justify-center py-6 min-h-[85vh] text-center">
+            <div class="relative mb-6">
+                <div class="absolute -inset-1 bg-gradient-to-r from-brand-cyan to-brand-bright rounded-full blur-lg opacity-75 animate-pulse"></div>
+                <div class="relative w-28 h-28 sm:w-32 sm:h-32 bg-brand-navy rounded-full border-2 border-brand-cyan flex items-center justify-center shadow-2xl">
+                    <i class="fa-solid fa-atom text-5xl sm:text-6xl text-brand-cyan animate-spin" style="animation-duration: 12s;"></i>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center space-x-2 bg-brand-blue/30 border border-brand-cyan/40 px-4 py-1.5 rounded-full mb-3">
+                <span class="w-2 h-2 rounded-full bg-brand-cyan animate-ping"></span>
+                <span class="text-xs font-semibold text-brand-cyan tracking-wider uppercase">Fase F • Kelas XI SMA</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight mb-2">
+                NEWTON <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-brand-bright">LAB</span>
+            </h1>
+            <p class="text-base sm:text-xl text-gray-300 font-medium max-w-xl mb-6">
+                Eksplorasi Interaktif Hukum II Newton: $\Sigma \vec{F} = m \cdot \vec{a}$
+            </p>
+
+            <!-- Identitas Siswa Form Container -->
+            <div class="bg-brand-navy/90 border border-brand-cyan/50 rounded-3xl p-5 sm:p-6 max-w-md w-full mb-6 shadow-2xl backdrop-blur-md text-left space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-brand-blue/50">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-cyan/20 border border-brand-cyan/40 flex items-center justify-center text-brand-cyan text-lg">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base">Identitas Peserta Didik</h3>
+                            <p class="text-xs text-gray-400">Isi identitas Anda sebelum memulai</p>
+                        </div>
+                    </div>
+                    <!-- LANDING PAGE TEACHER ACCESS BUTTON -->
+                    <button type="button" onclick="openTeacherAuthModal()" class="bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 border border-amber-500/50 text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition flex items-center space-x-1">
+                        <i class="fa-solid fa-key text-xs"></i>
+                        <span>Menu Guru</span>
+                    </button>
+                </div>
+
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="block text-gray-300 font-semibold mb-1">Kode Siswa Unik (NIS/NIPD/Kode Guru) <span class="text-red-400">*</span></label>
+                        <input type="text" id="init-student-code" placeholder="Contoh: NWT-001 atau 10234" class="w-full bg-brand-dark/90 border border-brand-blue/60 focus:border-brand-cyan rounded-xl p-3 text-white focus:outline-none transition uppercase">
+                        <p class="text-[10px] text-gray-400 mt-0.5">Kode ini digunakan agar progres Anda tidak tertukar dengan siswa lain.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 font-semibold mb-1">Nama Lengkap Siswa <span class="text-red-400">*</span></label>
+                        <input type="text" id="init-student-name" placeholder="Contoh: Budi Santoso" class="w-full bg-brand-dark/90 border border-brand-blue/60 focus:border-brand-cyan rounded-xl p-3 text-white focus:outline-none transition">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-gray-300 font-semibold mb-1">Kelas <span class="text-red-400">*</span></label>
+                            <input type="text" id="init-student-class" value="XI IPA 1" placeholder="Contoh: XI IPA 1" class="w-full bg-brand-dark/90 border border-brand-blue/60 focus:border-brand-cyan rounded-xl p-3 text-white focus:outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 font-semibold mb-1">No. Absen / Kelompok</label>
+                            <input type="text" id="init-student-no" placeholder="Contoh: 08" class="w-full bg-brand-dark/90 border border-brand-blue/60 focus:border-brand-cyan rounded-xl p-3 text-white focus:outline-none transition">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-brand-blue/50 text-[11px] text-gray-400 flex items-center justify-between">
+                    <span><i class="fa-solid fa-school text-brand-cyan mr-1"></i> SMAN 6 Muaro Jambi</span>
+                    <span><i class="fa-solid fa-chalkboard-user text-brand-bright mr-1"></i> Ibu Nurhidah, S.Pd.</span>
+                </div>
+            </div>
+
+            <button onclick="startAppWithProfile()" class="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-brand-dark transition-all duration-300 bg-gradient-to-r from-brand-cyan to-brand-bright rounded-2xl shadow-xl hover:shadow-brand-cyan/50 hover:scale-105 focus:outline-none active:scale-95 text-lg">
+                <span>MULAI PETUALANGAN FISIKA</span>
+                <i class="fa-solid fa-arrow-right ml-3 group-hover:translate-x-2 transition-transform"></i>
+            </button>
+        </section>
+
+        <!-- 1. DASHBOARD PAGE -->
+        <section id="page-dashboard" class="w-full hidden space-y-6">
+            <div class="bg-gradient-to-r from-brand-navy to-brand-card p-6 rounded-3xl border border-brand-blue/50 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-brand-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-1">Selamat Datang di Laboratorium Virtual!</h2>
+                    <p class="text-brand-cyan font-semibold text-xs sm:text-sm mb-3" id="dash-student-banner">Siswa: - | SMAN 6 Muaro Jambi</p>
+                    <p class="text-gray-300 text-xs sm:text-sm max-w-2xl">
+                        Pilih modul pembelajaran di bawah ini untuk mempelajari hubungan resultan gaya ($\Sigma \vec{F}$), massa ($m$), dan percepatan ($\vec{a}$).
+                    </p>
+                    <div class="mt-4 flex items-center space-x-3 bg-brand-dark/60 inline-flex px-4 py-2 rounded-xl border border-brand-blue/40">
+                        <i class="fa-solid fa-trophy text-amber-400 text-xl"></i>
+                        <div>
+                            <p class="text-[10px] text-gray-400">Total Progres Pembelajaran</p>
+                            <p id="dashboard-progress-text" class="text-xs sm:text-sm font-bold text-brand-cyan">0 / 8 Modul Selesai (0%)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div onclick="navigateTo('misi1')" class="bg-brand-navy hover:bg-brand-card border border-brand-blue/40 hover:border-brand-cyan/60 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg group relative overflow-hidden">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 border border-blue-400/40 text-blue-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <span id="badge-misi1" class="absolute top-4 right-4 bg-gray-700/60 text-gray-300 text-[10px] px-2 py-0.5 rounded-full font-semibold">Belum</span>
+                    <h3 class="text-base font-bold text-white mb-1 group-hover:text-brand-cyan transition-colors">1. Fenomena Nyata</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Eksplorasi cerita & studi kasus dorongan benda sehari-hari.</p>
+                </div>
+
+                <div onclick="navigateTo('misi2')" class="bg-brand-navy hover:bg-brand-card border border-brand-blue/40 hover:border-brand-cyan/60 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg group relative overflow-hidden">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 border border-purple-400/40 text-purple-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <span id="badge-misi2" class="absolute top-4 right-4 bg-gray-700/60 text-gray-300 text-[10px] px-2 py-0.5 rounded-full font-semibold">Belum</span>
+                    <h3 class="text-base font-bold text-white mb-1 group-hover:text-brand-cyan transition-colors">2. Petualangan Konsep</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Persamaan $\Sigma \vec{F} = m \cdot \vec{a}$, Vektor Gaya, dan Grafik Interaktif.</p>
+                </div>
+
+                <div onclick="navigateTo('simulasi')" class="bg-brand-navy hover:bg-brand-card border border-brand-cyan/50 hover:border-brand-cyan rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-xl group relative overflow-hidden ring-1 ring-brand-cyan/30">
+                    <div class="w-12 h-12 rounded-xl bg-brand-cyan/20 border border-brand-cyan/50 text-brand-cyan flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <span id="badge-simulasi" class="absolute top-4 right-4 bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/40 text-[10px] px-2 py-0.5 rounded-full font-bold">UTAMA</span>
+                    <h3 class="text-base font-bold text-white mb-1 group-hover:text-brand-cyan transition-colors">3. Lab Gaya & Gerak</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Simulasi virtual interaktif real-time dengan pengatur massa, gaya, dan gesekan.</p>
+                </div>
+
+                <div onclick="navigateTo('soal')" class="bg-brand-navy hover:bg-brand-card border border-brand-blue/40 hover:border-brand-cyan/60 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg group relative overflow-hidden">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-pen-ruler"></i>
+                    </div>
+                    <span id="badge-soal" class="absolute top-4 right-4 bg-gray-700/60 text-gray-300 text-[10px] px-2 py-0.5 rounded-full font-semibold">Belum</span>
+                    <h3 class="text-base font-bold text-white mb-1 group-hover:text-brand-cyan transition-colors">4. Contoh Soal</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Latihan soal bertingkat dari dasar hingga penerapan secara terstruktur.</p>
+                </div>
+
+                <div onclick="navigateTo('game')" class="bg-brand-navy hover:bg-brand-card border border-brand-blue/40 hover:border-brand-cyan/60 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg group relative overflow-hidden">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <span id="badge-game" class="absolute top-4 right-4 bg-gray-700/60 text-gray-300 text-[10px] px-2 py-0.5 rounded-full font-semibold">Belum</span>
+                    <h3 class="text-base font-bold text-white mb-1 group-hover:text-brand-cyan transition-colors">5. Newton Challenge</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Mini game tantangan 5 level untuk menguji pemahaman konsep.</p>
+                </div>
+
+                <div onclick="navigateTo('lkpd')" class="bg-brand-navy hover:bg-brand-card border border-brand-blue/40 hover:border-brand-cyan/60 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg group relative overflow-hidden">
+                    <div class="w-12 h-12 rounded-xl bg-pink-500/20 border border-pink-400/40 text-pink-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-file-signature"></i>
+                    </div>
+                    <span id="badge-lkpd" class="absolute top-4 right-4 bg-gray-700/60 text-gray-300 text-[10px] px-2 py-0.5 rounded-full font-semibold">Belum</span>
+                    <h3 class="text-base font-bold text-white mb-1 group-hover:text-brand-cyan transition-colors">6. LKPD Digital</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Lembar Kerja Peserta Didik eksperimen mandiri siap cetak A4/PDF.</p>
+                </div>
+
+                <div onclick="navigateTo('kuis')" class="bg-brand-navy hover:bg-brand-card border border-brand-blue/40 hover:border-brand-cyan/60 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg group relative overflow-hidden">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/20 border border-indigo-400/40 text-indigo-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <span id="badge-kuis" class="absolute top-4 right-4 bg-gray-700/60 text-gray-300 text-[10px] px-2 py-0.5 rounded-full font-semibold">Belum</span>
+                    <h3 class="text-base font-bold text-white mb-1 group-hover:text-brand-cyan transition-colors">7. Kuis Interaktif</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">15 Soal evaluasi otomatis dinilai lengkap dengan pembahasan.</p>
+                </div>
+
+                <div onclick="navigateTo('evaluasi')" class="bg-brand-navy hover:bg-brand-card border border-brand-blue/40 hover:border-brand-cyan/60 rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-lg group relative overflow-hidden">
+                    <div class="w-12 h-12 rounded-xl bg-teal-500/20 border border-teal-400/40 text-teal-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-clipboard-question"></i>
+                    </div>
+                    <span id="badge-evaluasi" class="absolute top-4 right-4 bg-gray-700/60 text-gray-300 text-[10px] px-2 py-0.5 rounded-full font-semibold">Belum</span>
+                    <h3 class="text-base font-bold text-white mb-1 group-hover:text-brand-cyan transition-colors">8. Evaluasi & Refleksi</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Ringkasan hasil belajar, kartu identitas laporan, dan form refleksi.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. MISI 1 PAGE: FENOMENA -->
+        <section id="page-misi1" class="w-full hidden space-y-6">
+            <div class="flex items-center justify-between bg-brand-navy/60 p-4 rounded-2xl border border-brand-blue/40">
+                <div>
+                    <span class="text-xs font-bold text-brand-cyan tracking-wider uppercase">Misi 1</span>
+                    <h2 class="text-xl font-bold text-white">Fenomena dalam Kehidupan Sehari-hari</h2>
+                </div>
+                <button onclick="navigateTo('dashboard')" class="text-xs bg-brand-blue/40 hover:bg-brand-blue text-white px-3 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <div class="bg-brand-navy p-6 rounded-3xl border border-brand-blue/60 shadow-xl space-y-6">
+                <div class="bg-brand-dark/80 p-4 sm:p-6 rounded-2xl border border-brand-blue/40">
+                    <h3 class="text-base font-bold text-brand-cyan mb-2"><i class="fa-solid fa-comments mr-2"></i>Studi Kasus Mendorong Kotak</h3>
+                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed mb-4">
+                        Dua orang siswa SMAN 6 Muaro Jambi sedang memindahkan peralatan laboratorium. Siswa A mendorong **Kotak A (Ringan)** dengan massa $m_{\text{A}} = 5\text{ kg}$, sedangkan Siswa B mendorong **Kotak B (Berat)** dengan massa $m_{\text{B}} = 20\text{ kg}$. Jika keduanya memberikan gaya dorong konstan yang sama besar, yaitu $\Sigma F = 50\text{ N}$:
+                    </p>
+
+                    <!-- Improved Box Comparison Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-brand-navy/90 p-5 rounded-2xl border-2 border-brand-cyan/40 text-center shadow-lg relative">
+                            <span class="absolute top-3 right-3 bg-brand-cyan/20 text-brand-cyan text-[10px] font-bold px-2 py-0.5 rounded-full">KOTAK A</span>
+                            <div class="text-5xl my-2">📦</div>
+                            <h4 class="font-bold text-white text-sm sm:text-base">Kotak Ringan</h4>
+                            <div class="mt-3 space-y-1 text-xs font-mono text-gray-300 bg-brand-dark/70 p-3 rounded-xl border border-brand-blue/40">
+                                <p>Massa ($m_{\text{A}}$) = $5\text{ kg}$</p>
+                                <p class="text-brand-cyan">Resultan Gaya ($\Sigma F$) = $50\text{ N}$</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-brand-navy/90 p-5 rounded-2xl border-2 border-brand-blue/40 text-center shadow-lg relative">
+                            <span class="absolute top-3 right-3 bg-brand-blue/40 text-gray-300 text-[10px] font-bold px-2 py-0.5 rounded-full">KOTAK B</span>
+                            <div class="text-6xl my-1">📦📦</div>
+                            <h4 class="font-bold text-white text-sm sm:text-base">Kotak Berat</h4>
+                            <div class="mt-3 space-y-1 text-xs font-mono text-gray-300 bg-brand-dark/70 p-3 rounded-xl border border-brand-blue/40">
+                                <p>Massa ($m_{\text{B}}$) = $20\text{ kg}$</p>
+                                <p class="text-brand-bright">Resultan Gaya ($\Sigma F$) = $50\text{ N}$</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="font-semibold text-white text-xs sm:text-sm mb-3">
+                        Pertanyaan: Benda manakah yang akan memperoleh percepatan ($\vec{a}$) lebih besar?
+                    </p>
+
+                    <div class="space-y-2" id="misi1-options">
+                        <button onclick="checkMisi1Answer('A')" class="w-full text-left p-3.5 rounded-xl bg-brand-blue/30 hover:bg-brand-blue/60 border border-brand-blue/50 text-xs sm:text-sm text-gray-200 transition flex items-center justify-between">
+                            <span>A. Kotak A (massa $5\text{ kg}$)</span>
+                            <i class="fa-solid fa-chevron-right text-brand-cyan"></i>
+                        </button>
+                        <button onclick="checkMisi1Answer('B')" class="w-full text-left p-3.5 rounded-xl bg-brand-blue/30 hover:bg-brand-blue/60 border border-brand-blue/50 text-xs sm:text-sm text-gray-200 transition flex items-center justify-between">
+                            <span>B. Kotak B (massa $20\text{ kg}$)</span>
+                            <i class="fa-solid fa-chevron-right text-brand-cyan"></i>
+                        </button>
+                        <button onclick="checkMisi1Answer('C')" class="w-full text-left p-3.5 rounded-xl bg-brand-blue/30 hover:bg-brand-blue/60 border border-brand-blue/50 text-xs sm:text-sm text-gray-200 transition flex items-center justify-between">
+                            <span>C. Keduanya memiliki percepatan sama persis</span>
+                            <i class="fa-solid fa-chevron-right text-brand-cyan"></i>
+                        </button>
+                        <button onclick="checkMisi1Answer('D')" class="w-full text-left p-3.5 rounded-xl bg-brand-blue/30 hover:bg-brand-blue/60 border border-brand-blue/50 text-xs sm:text-sm text-gray-200 transition flex items-center justify-between">
+                            <span>D. Tidak ada yang bergerak</span>
+                            <i class="fa-solid fa-chevron-right text-brand-cyan"></i>
+                        </button>
+                    </div>
+
+                    <div id="misi1-feedback" class="hidden mt-4 p-4 rounded-xl border text-xs sm:text-sm font-medium"></div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button onclick="finishModule('misi1', 'misi2')" class="bg-brand-cyan text-brand-dark font-bold px-6 py-2.5 rounded-xl hover:bg-opacity-90 transition text-xs sm:text-sm">
+                        Lanjut ke Petualangan Konsep <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. MISI 2 PAGE: MATERI KONSEP FISIKA -->
+        <section id="page-misi2" class="w-full hidden space-y-6">
+            <div class="flex items-center justify-between bg-brand-navy/60 p-4 rounded-2xl border border-brand-blue/40">
+                <div>
+                    <span class="text-xs font-bold text-brand-cyan tracking-wider uppercase">Misi 2</span>
+                    <h2 class="text-xl font-bold text-white">Petualangan Konsep Hukum II Newton</h2>
+                </div>
+                <button onclick="navigateTo('dashboard')" class="text-xs bg-brand-blue/40 hover:bg-brand-blue text-white px-3 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Card 1: Bunyi & Persamaan -->
+                <div class="bg-brand-navy p-6 rounded-3xl border border-brand-blue/60 shadow-xl space-y-4">
+                    <div class="flex items-center space-x-3 text-brand-cyan">
+                        <i class="fa-solid fa-scroll text-2xl"></i>
+                        <h3 class="text-lg font-bold text-white">1. Bunyi & Persamaan Utama</h3>
+                    </div>
+                    <p class="text-gray-300 text-xs sm:text-sm leading-relaxed">
+                        "Percepatan ($\vec{a}$) yang dihasilkan oleh resultan gaya ($\Sigma \vec{F}$) yang bekerja pada suatu benda berbanding lurus dengan resultan gaya, searah dengan resultan gaya, dan berbanding terbalik dengan massa benda ($m$)."
+                    </p>
+
+                    <!-- Large Formula Box -->
+                    <div class="bg-gradient-to-r from-brand-dark via-brand-card to-brand-dark p-6 rounded-2xl border border-brand-cyan/40 text-center shadow-inner my-4">
+                        <p class="text-xs text-brand-cyan uppercase tracking-widest font-semibold mb-2">Persamaan Utama Hukum II Newton</p>
+                        <div class="text-3xl sm:text-5xl font-black text-white py-2">
+                            $$\Sigma \vec{F} = m \cdot \vec{a}$$
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 text-xs text-gray-300 pt-4 border-t border-brand-blue/40">
+                            <div><span class="font-bold text-brand-cyan">$\Sigma \vec{F}$</span> = Resultan Gaya ($\text{N}$)</div>
+                            <div><span class="font-bold text-brand-cyan">$m$</span> = Massa Benda ($\text{kg}$)</div>
+                            <div><span class="font-bold text-brand-cyan">$\vec{a}$</span> = Percepatan ($\text{m/s}^2$)</div>
+                        </div>
+                    </div>
+
+                    <!-- Turunan Rumus -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div class="bg-brand-dark/60 p-4 rounded-xl border border-brand-blue/40 text-center">
+                            <p class="text-xs text-gray-400 mb-1">Mencari Percepatan ($\vec{a}$):</p>
+                            <div class="text-xl font-bold text-brand-cyan">$$a = \frac{\Sigma F}{m}$$</div>
+                        </div>
+                        <div class="bg-brand-dark/60 p-4 rounded-xl border border-brand-blue/40 text-center">
+                            <p class="text-xs text-gray-400 mb-1">Mencari Massa ($m$):</p>
+                            <div class="text-xl font-bold text-brand-bright">$$m = \frac{\Sigma F}{a}$$</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Interactive Dynamic Graph Hubungan F vs a dan m vs a -->
+                <div class="bg-brand-navy p-6 rounded-3xl border border-brand-blue/60 shadow-xl space-y-4">
+                    <div class="flex items-center space-x-3 text-brand-cyan">
+                        <i class="fa-solid fa-chart-line text-2xl"></i>
+                        <h3 class="text-lg font-bold text-white">2. Grafik Hubungan Interaktif</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-brand-dark/80 p-4 rounded-2xl border border-brand-blue/40 flex flex-col items-center">
+                            <h4 class="font-bold text-xs text-brand-cyan mb-2">Hubungan $\Sigma F$ vs $a$ (Massa Tetap $m = 5\text{ kg}$)</h4>
+                            <canvas id="graph-fa" width="300" height="180" class="w-full bg-brand-navy/50 rounded-lg border border-brand-blue/30"></canvas>
+                            <p class="text-[11px] text-gray-300 mt-2 text-center">
+                                Berbanding Lurus ($a \propto \Sigma F$): Jika Gaya naik 2x, maka Percepatan juga naik 2x.
+                            </p>
+                        </div>
+
+                        <div class="bg-brand-dark/80 p-4 rounded-2xl border border-brand-blue/40 flex flex-col items-center">
+                            <h4 class="font-bold text-xs text-brand-bright mb-2">Hubungan $m$ vs $a$ (Gaya Tetap $\Sigma F = 20\text{ N}$)</h4>
+                            <canvas id="graph-ma" width="300" height="180" class="w-full bg-brand-navy/50 rounded-lg border border-brand-blue/30"></canvas>
+                            <p class="text-[11px] text-gray-300 mt-2 text-center">
+                                Berbanding Terbalik ($a \propto \frac{1}{m}$): Jika Massa naik 2x, Percepatan menjadi setengahnya ($\frac{1}{2}$).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button onclick="finishModule('misi2', 'simulasi')" class="bg-brand-cyan text-brand-dark font-bold px-6 py-2.5 rounded-xl hover:bg-opacity-90 transition text-xs sm:text-sm">
+                        Buka Laboratorium Virtual <i class="fa-solid fa-flask ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. MISI 3 PAGE: SIMULASI VIRTUAL INTERAKTIF -->
+        <section id="page-simulasi" class="w-full hidden space-y-6">
+            <div class="flex items-center justify-between bg-brand-navy/60 p-4 rounded-2xl border border-brand-blue/40">
+                <div>
+                    <span class="text-xs font-bold text-brand-cyan tracking-wider uppercase">Misi 3 — Fitur Utama</span>
+                    <h2 class="text-xl font-bold text-white">Laboratorium Virtual Gaya dan Gerak</h2>
+                </div>
+                <button onclick="navigateTo('dashboard')" class="text-xs bg-brand-blue/40 hover:bg-brand-blue text-white px-3 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <div id="sim-prediction-card" class="bg-gradient-to-r from-brand-navy to-brand-card p-5 rounded-2xl border border-brand-cyan/40 shadow-lg">
+                <div class="flex items-center space-x-2 text-brand-cyan mb-2">
+                    <i class="fa-solid fa-brain"></i>
+                    <h3 class="font-bold text-xs sm:text-sm text-white">Panel Prediksi Sebelum Uji Coba:</h3>
+                </div>
+                <p class="text-xs text-gray-300 mb-3">
+                    Menurutmu, jika gaya dorong ke kanan ditingkatkan dari $20\text{ N}$ menjadi $40\text{ N}$ sementara massa benda tetap $5\text{ kg}$, apakah yang akan terjadi pada gerakan benda?
+                </p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <button onclick="checkPrediction('low')" class="bg-brand-dark border border-brand-blue/50 hover:border-brand-cyan px-3 py-1.5 rounded-lg text-gray-200">
+                        Percepatan berkurang
+                    </button>
+                    <button onclick="checkPrediction('same')" class="bg-brand-dark border border-brand-blue/50 hover:border-brand-cyan px-3 py-1.5 rounded-lg text-gray-200">
+                        Percepatan tetap sama
+                    </button>
+                    <button onclick="checkPrediction('high')" class="bg-brand-dark border border-brand-blue/50 hover:border-brand-cyan px-3 py-1.5 rounded-lg text-gray-200">
+                        Percepatan menjadi 2 kali lebih besar
+                    </button>
+                </div>
+                <div id="prediction-feedback" class="hidden mt-3 text-xs font-bold"></div>
+            </div>
+
+            <!-- MAIN SIMULATOR UI -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Left Column: Canvas Viewport & Controls -->
+                <div class="lg:col-span-8 space-y-4">
+                    <div class="bg-brand-navy rounded-3xl border border-brand-blue/60 p-4 shadow-2xl relative overflow-hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3 text-[11px] text-gray-300 border-b border-brand-blue/40 pb-2">
+                            <div class="flex items-center space-x-3">
+                                <span class="flex items-center"><span class="w-3 h-3 bg-red-500 rounded-full inline-block mr-1"></span> $F_{\text{kanan}}$</span>
+                                <span class="flex items-center"><span class="w-3 h-3 bg-blue-500 rounded-full inline-block mr-1"></span> $F_{\text{kiri}}$</span>
+                                <span class="flex items-center"><span class="w-3 h-3 bg-amber-500 rounded-full inline-block mr-1"></span> $f_k$</span>
+                                <span class="flex items-center"><span class="w-3 h-3 bg-emerald-400 rounded-full inline-block mr-1"></span> $\Sigma \vec{F}$</span>
+                            </div>
+                            <div id="sim-status-tag" class="bg-brand-dark px-2.5 py-0.5 rounded-full text-brand-cyan font-mono font-bold">
+                                KONDISI: DIAM
+                            </div>
+                        </div>
+
+                        <!-- CANVAS ELEMENT -->
+                        <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] bg-slate-900 rounded-xl overflow-hidden border border-brand-blue/40">
+                            <canvas id="sim-canvas" class="w-full h-full block"></canvas>
+                        </div>
+
+                        <!-- Controls Bar -->
+                        <div class="flex flex-wrap items-center justify-center gap-3 mt-4">
+                            <button id="btn-sim-play" onclick="toggleSim()" class="bg-brand-cyan hover:bg-opacity-90 text-brand-dark font-extrabold px-6 py-2.5 rounded-xl shadow-lg flex items-center space-x-2 transition active:scale-95 text-xs sm:text-sm">
+                                <i class="fa-solid fa-play"></i>
+                                <span>MULAI SIMULASI</span>
+                            </button>
+                            <button onclick="resetSim()" class="bg-brand-blue/50 hover:bg-brand-blue text-white font-bold px-4 py-2.5 rounded-xl border border-brand-blue/60 transition active:scale-95 text-xs sm:text-sm flex items-center space-x-2">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>RESET</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sliders Dashboard -->
+                    <div class="bg-brand-navy rounded-3xl border border-brand-blue/60 p-5 shadow-xl space-y-4">
+                        <h3 class="font-bold text-xs sm:text-sm text-white border-b border-brand-blue/40 pb-2 flex items-center">
+                            <i class="fa-solid fa-sliders text-brand-cyan mr-2"></i> Pengaturan Parameter Simulasi Fisika
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <label class="text-gray-300">Massa Benda ($m$):</label>
+                                    <span id="val-mass" class="text-brand-cyan font-mono font-bold text-sm">5 kg</span>
+                                </div>
+                                <input type="range" id="slider-mass" min="1" max="20" step="1" value="5" oninput="updateSimParameters()" class="w-full">
+                                <div class="flex justify-between text-[10px] text-gray-400">
+                                    <span>$1\text{ kg}$</span>
+                                    <span>$20\text{ kg}$</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <label class="text-gray-300">Gaya Dorong Kanan ($F_{\text{kanan}}$):</label>
+                                    <span id="val-fkadan" class="text-red-400 font-mono font-bold text-sm">20 N</span>
+                                </div>
+                                <input type="range" id="slider-fkanan" min="0" max="100" step="1" value="20" oninput="updateSimParameters()" class="w-full">
+                                <div class="flex justify-between text-[10px] text-gray-400">
+                                    <span>$0\text{ N}$</span>
+                                    <span>$100\text{ N}$</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <label class="text-gray-300">Gaya Tarik Kiri ($F_{\text{kiri}}$):</label>
+                                    <span id="val-fkiri" class="text-blue-400 font-mono font-bold text-sm">5 N</span>
+                                </div>
+                                <input type="range" id="slider-fkiri" min="0" max="100" step="1" value="5" oninput="updateSimParameters()" class="w-full">
+                                <div class="flex justify-between text-[10px] text-gray-400">
+                                    <span>$0\text{ N}$</span>
+                                    <span>$100\text{ N}$</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <label class="text-gray-300">Gaya Gesek Kinetik ($f_k$):</label>
+                                    <span id="val-fgesek" class="text-amber-400 font-mono font-bold text-sm">0 N</span>
+                                </div>
+                                <input type="range" id="slider-fgesek" min="0" max="50" step="1" value="0" oninput="updateSimParameters()" class="w-full">
+                                <div class="flex justify-between text-[10px] text-gray-400">
+                                    <span>$0\text{ N}$ (Licin)</span>
+                                    <span>$50\text{ N}$ (Kasar)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Live Calculated Results & Experiment Logger -->
+                <div class="lg:col-span-4 space-y-4">
+                    <div class="bg-brand-navy rounded-3xl border border-brand-blue/60 p-5 shadow-xl space-y-3">
+                        <h3 class="font-bold text-xs sm:text-sm text-white border-b border-brand-blue/40 pb-2 flex items-center">
+                            <i class="fa-solid fa-calculator text-brand-cyan mr-2"></i> Hasil Perhitungan Otomatis
+                        </h3>
+
+                        <div class="space-y-2 font-mono text-xs">
+                            <div class="bg-brand-dark/70 p-3 rounded-xl border border-brand-blue/30 flex justify-between items-center">
+                                <span class="text-gray-400">Resultan Gaya ($\Sigma \vec{F}$):</span>
+                                <span id="out-res-f" class="text-sm font-extrabold text-emerald-400">+15,0 N</span>
+                            </div>
+                            <div class="bg-brand-dark/70 p-3 rounded-xl border border-brand-blue/30 flex justify-between items-center">
+                                <span class="text-gray-400">Massa Total ($m$):</span>
+                                <span id="out-mass" class="text-sm font-bold text-brand-cyan">5,0 kg</span>
+                            </div>
+                            <div class="bg-brand-dark/80 p-3.5 rounded-xl border border-brand-cyan/40 flex justify-between items-center glow-cyan">
+                                <span class="text-white font-sans font-bold">Percepatan ($\vec{a}$):</span>
+                                <span id="out-acc" class="text-lg font-black text-brand-cyan">3,00 m/s²</span>
+                            </div>
+                            <div class="bg-brand-dark/70 p-3 rounded-xl border border-brand-blue/30 flex justify-between items-center">
+                                <span class="text-gray-400">Arah Gerak Benda:</span>
+                                <span id="out-dir" class="text-xs font-bold text-amber-300">Ke Kanan ➔</span>
+                            </div>
+                            <div class="bg-brand-dark/70 p-3 rounded-xl border border-brand-blue/30 flex justify-between items-center">
+                                <span class="text-gray-400">Kecepatan Sesaat ($v$):</span>
+                                <span id="out-vel" class="text-xs font-bold text-white">0,00 m/s</span>
+                            </div>
+                        </div>
+
+                        <button onclick="logExperimentData()" class="w-full bg-brand-blue/60 hover:bg-brand-blue text-brand-cyan font-bold p-2.5 rounded-xl border border-brand-cyan/40 transition text-xs flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-bookmark"></i>
+                            <span>Simpan Hasil ke Tabel Percobaan</span>
+                        </button>
+                    </div>
+
+                    <div class="bg-brand-navy rounded-3xl border border-brand-blue/60 p-4 shadow-xl space-y-3">
+                        <div class="flex items-center justify-between border-b border-brand-blue/40 pb-2">
+                            <h3 class="font-bold text-xs text-white">📋 Catatan Percobaan Digital</h3>
+                            <button onclick="clearSimLogs()" class="text-[10px] text-red-400 hover:underline">Hapus Semua</button>
+                        </div>
+
+                        <div class="max-h-48 overflow-y-auto custom-scrollbar">
+                            <table class="w-full text-left text-[11px]">
+                                <thead class="bg-brand-dark text-gray-400 sticky top-0">
+                                    <tr>
+                                        <th class="p-1.5">No</th>
+                                        <th class="p-1.5">$m$ ($\text{kg}$)</th>
+                                        <th class="p-1.5">$\Sigma F$ ($\text{N}$)</th>
+                                        <th class="p-1.5">$a$ ($\text{m/s}^2$)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sim-log-tbody" class="divide-y divide-brand-blue/30 text-gray-200">
+                                    <tr>
+                                        <td colspan="4" class="p-3 text-center text-gray-500 italic">Belum ada data percobaan disimpan.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-2">
+                <button onclick="finishModule('simulasi', 'soal')" class="bg-brand-cyan text-brand-dark font-bold px-6 py-2.5 rounded-xl hover:bg-opacity-90 transition text-xs sm:text-sm">
+                    Lanjut ke Contoh Soal <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 5. MISI 4 PAGE: CONTOH SOAL -->
+        <section id="page-soal" class="w-full hidden space-y-6">
+            <div class="flex items-center justify-between bg-brand-navy/60 p-4 rounded-2xl border border-brand-blue/40">
+                <div>
+                    <span class="text-xs font-bold text-brand-cyan tracking-wider uppercase">Misi 4</span>
+                    <h2 class="text-xl font-bold text-white">Contoh Soal dan Pembahasan Fisika</h2>
+                </div>
+                <button onclick="navigateTo('dashboard')" class="text-xs bg-brand-blue/40 hover:bg-brand-blue text-white px-3 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Soal 1 -->
+                <div class="bg-brand-navy p-6 rounded-3xl border border-brand-blue/60 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-green-500/20 text-green-400 border border-green-500/40 text-xs px-3 py-1 rounded-full font-bold">TINGKAT DASAR</span>
+                        <span class="text-xs text-gray-400">Soal #1</span>
+                    </div>
+
+                    <p class="text-white font-medium text-xs sm:text-sm leading-relaxed">
+                        Sebuah benda bermassa $m = 4\text{ kg}$ berada di atas lantai licin. Benda tersebut ditarik oleh resultan gaya konstan sebesar $\Sigma F = 20\text{ N}$. Berapakah percepatan ($\vec{a}$) yang dialami oleh benda tersebut?
+                    </p>
+
+                    <button onclick="toggleSolution('sol1')" class="bg-brand-blue/50 hover:bg-brand-blue text-brand-cyan border border-brand-blue/80 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center space-x-2">
+                        <i class="fa-solid fa-key"></i>
+                        <span>LIHAT PEMBAHASAN DETIL</span>
+                    </button>
+
+                    <div id="sol1" class="hidden bg-brand-dark/80 p-5 rounded-2xl border border-brand-cyan/30 text-xs space-y-2 text-gray-200 font-mono">
+                        <p class="text-brand-cyan font-bold font-sans text-sm mb-2">📌 Pembahasan Langkah Demi Langkah:</p>
+                        <p><strong>Diketahui:</strong></p>
+                        <p>• Massa benda ($m$) = $4\text{ kg}$</p>
+                        <p>• Resultan Gaya ($\Sigma F$) = $20\text{ N}$</p>
+                        <p class="pt-1"><strong>Ditanyakan:</strong> Percepatan ($a$)</p>
+                        <p class="pt-1"><strong>Persamaan:</strong> $a = \frac{\Sigma F}{m}$</p>
+                        <p class="pt-1"><strong>Penyelesaian:</strong></p>
+                        <p>$$a = \frac{20\text{ N}}{4\text{ kg}} = 5\text{ m/s}^2$$</p>
+                        <div class="mt-3 p-2 bg-emerald-500/20 border border-emerald-500/40 rounded text-emerald-300 font-sans font-bold">
+                            Jawaban Akhir: Percepatan benda adalah $5\text{ m/s}^2$.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Soal 2 -->
+                <div class="bg-brand-navy p-6 rounded-3xl border border-brand-blue/60 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 text-xs px-3 py-1 rounded-full font-bold">TINGKAT MENENGAH</span>
+                        <span class="text-xs text-gray-400">Soal #2</span>
+                    </div>
+
+                    <p class="text-white font-medium text-xs sm:text-sm leading-relaxed">
+                        Sebuah balok bermassa $m = 5\text{ kg}$ ditarik dengan gaya $F_1 = 30\text{ N}$ ke arah kanan dan $F_2 = 10\text{ N}$ ke arah kiri pada lantai licin. Tentukan besar dan arah percepatan balok!
+                    </p>
+
+                    <button onclick="toggleSolution('sol2')" class="bg-brand-blue/50 hover:bg-brand-blue text-brand-cyan border border-brand-blue/80 text-xs font-bold px-4 py-2 rounded-xl transition flex items-center space-x-2">
+                        <i class="fa-solid fa-key"></i>
+                        <span>LIHAT PEMBAHASAN DETIL</span>
+                    </button>
+
+                    <div id="sol2" class="hidden bg-brand-dark/80 p-5 rounded-2xl border border-brand-cyan/30 text-xs space-y-2 text-gray-200 font-mono">
+                        <p class="text-brand-cyan font-bold font-sans text-sm mb-2">📌 Pembahasan Langkah Demi Langkah:</p>
+                        <p><strong>Diketahui:</strong> $m = 5\text{ kg}$, $F_1 = 30\text{ N}$ (kanan), $F_2 = 10\text{ N}$ (kiri)</p>
+                        <p class="pt-1"><strong>1. Resultan Gaya ($\Sigma F$):</strong></p>
+                        <p>$$\Sigma F = F_1 - F_2 = 30\text{ N} - 10\text{ N} = 20\text{ N}\text{ (ke kanan)}$$</p>
+                        <p class="pt-1"><strong>2. Percepatan ($a$):</strong></p>
+                        <p>$$a = \frac{\Sigma F}{m} = \frac{20\text{ N}}{5\text{ kg}} = 4\text{ m/s}^2$$</p>
+                        <div class="mt-3 p-2 bg-emerald-500/20 border border-emerald-500/40 rounded text-emerald-300 font-sans font-bold">
+                            Jawaban Akhir: Percepatan balok adalah $4\text{ m/s}^2$ ke arah kanan.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button onclick="finishModule('soal', 'game')" class="bg-brand-cyan text-brand-dark font-bold px-6 py-2.5 rounded-xl hover:bg-opacity-90 transition text-xs sm:text-sm">
+                        Lanjut ke Newton Challenge Game <i class="fa-solid fa-gamepad ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. MISI 5 PAGE: MINI GAME -->
+        <section id="page-game" class="w-full hidden space-y-6">
+            <div class="flex items-center justify-between bg-brand-navy/60 p-4 rounded-2xl border border-brand-blue/40">
+                <div>
+                    <span class="text-xs font-bold text-brand-cyan tracking-wider uppercase">Misi 5 — Mini Game</span>
+                    <h2 class="text-xl font-bold text-white">Newton Challenge 🎮</h2>
+                </div>
+                <button onclick="navigateTo('dashboard')" class="text-xs bg-brand-blue/40 hover:bg-brand-blue text-white px-3 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <div class="bg-brand-navy p-6 rounded-3xl border border-brand-blue/60 shadow-2xl space-y-6 relative overflow-hidden">
+                <div class="flex flex-wrap items-center justify-between bg-brand-dark/80 p-4 rounded-2xl border border-brand-blue/40 gap-3">
+                    <div class="flex items-center space-x-3">
+                        <span id="game-level-badge" class="bg-gradient-to-r from-brand-cyan to-brand-bright text-brand-dark font-extrabold text-xs px-3 py-1 rounded-full">
+                            LEVEL 1 / 5
+                        </span>
+                        <h3 id="game-level-title" class="text-xs sm:text-sm font-bold text-white">Mengenali Konsep Gaya & Percepatan</h3>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs font-mono">
+                        <div>Siswa: <span id="game-student-name" class="text-white font-bold">--</span></div>
+                        <div>Skor: <span id="game-score" class="text-brand-cyan font-bold text-base">0</span></div>
+                    </div>
+                </div>
+
+                <div id="game-content-box" class="bg-brand-dark/60 p-6 rounded-2xl border border-brand-blue/40 space-y-4">
+                    <p id="game-question-text" class="text-white font-medium text-xs sm:text-base">
+                        Memuat pertanyaan game...
+                    </p>
+
+                    <div id="game-options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                </div>
+
+                <div id="game-feedback-box" class="hidden p-4 rounded-2xl border text-center font-bold text-xs sm:text-sm"></div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <button onclick="resetGame()" class="text-xs text-gray-400 hover:text-white underline">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Main Ulang dari Level 1
+                    </button>
+                    <button onclick="finishModule('game', 'lkpd')" class="bg-brand-cyan text-brand-dark font-bold px-6 py-2.5 rounded-xl hover:bg-opacity-90 transition text-xs sm:text-sm">
+                        Lanjut ke LKPD Digital <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. MISI 6 PAGE: LKPD DIGITAL -->
+        <section id="page-lkpd" class="w-full hidden space-y-6">
+            <div class="flex items-center justify-between bg-brand-navy/60 p-4 rounded-2xl border border-brand-blue/40 no-print">
+                <div>
+                    <span class="text-xs font-bold text-brand-cyan tracking-wider uppercase">Misi 6</span>
+                    <h2 class="text-xl font-bold text-white">Lembar Kerja Peserta Didik (LKPD) Digital</h2>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="window.print()" class="text-xs bg-brand-cyan text-brand-dark font-bold px-3 py-1.5 rounded-lg hover:bg-opacity-90">
+                        <i class="fa-solid fa-print mr-1"></i> Cetak / Simpan PDF (A4)
+                    </button>
+                    <button onclick="navigateTo('dashboard')" class="text-xs bg-brand-blue/40 hover:bg-brand-blue text-white px-3 py-1.5 rounded-lg">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                    </button>
+                </div>
+            </div>
+
+            <!-- PRINTABLE LKPD CONTAINER -->
+            <div class="lkpd-print-container bg-brand-navy p-6 sm:p-8 rounded-3xl border border-brand-blue/60 shadow-2xl space-y-6 lkpd-card">
+                <!-- Header Report -->
+                <div class="border-b-2 border-brand-cyan/60 pb-4 text-center space-y-1">
+                    <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">LKPD FISIKA DIGITAL</h2>
+                    <p class="text-xs sm:text-sm font-semibold text-brand-cyan">INVESTIGASI HUBUNGAN GAYA, MASSA, DAN PERCEPATAN (HUKUM II NEWTON)</p>
+                    <p class="text-xs text-gray-300">SMAN 6 Muaro Jambi • Mata Pelajaran Fisika • Guru Pengampu: Ibu Nurhidah, S.Pd.</p>
+                </div>
+
+                <!-- Synchronized Identitas Siswa -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-brand-dark/60 p-4 rounded-2xl border border-brand-blue/40">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Nama Siswa Lengkap:</label>
+                        <input type="text" id="lkpd-nama" placeholder="Isi nama..." class="w-full bg-brand-navy border border-brand-blue/60 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-brand-cyan">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Kelas / Absen:</label>
+                        <input type="text" id="lkpd-kelas" placeholder="Isi kelas..." class="w-full bg-brand-navy border border-brand-blue/60 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-brand-cyan">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Tanggal Praktikum:</label>
+                        <input type="date" id="lkpd-tanggal" class="w-full bg-brand-navy border border-brand-blue/60 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-brand-cyan">
+                    </div>
+                </div>
+
+                <!-- Experiment 1 Table -->
+                <div class="space-y-2">
+                    <h3 class="font-bold text-xs sm:text-sm text-brand-cyan uppercase">A. Tabel Eksperimen 1: Variasi Gaya ($\Sigma \vec{F}$) [Massa Tetap $m = 5\text{ kg}$]</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border border-brand-blue/40">
+                            <thead class="bg-brand-dark text-brand-cyan">
+                                <tr>
+                                    <th class="p-2 border border-brand-blue/40">Percobaan</th>
+                                    <th class="p-2 border border-brand-blue/40">Massa $m$ ($\text{kg}$)</th>
+                                    <th class="p-2 border border-brand-blue/40">Resultan Gaya $\Sigma \vec{F}$ ($\text{N}$)</th>
+                                    <th class="p-2 border border-brand-blue/40">Percepatan $\vec{a}$ ($\text{m/s}^2$) [Hitung]</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-brand-blue/30 text-gray-200">
+                                <tr>
+                                    <td class="p-2 border border-brand-blue/30">1</td>
+                                    <td class="p-2 border border-brand-blue/30">$5\text{ kg}$</td>
+                                    <td class="p-2 border border-brand-blue/30">$10\text{ N}$</td>
+                                    <td class="p-2 border border-brand-blue/30"><input type="number" id="lkpd-exp1-a1" placeholder="a = ..." class="w-24 bg-brand-dark p-1 rounded border border-brand-blue/50 text-brand-cyan"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-brand-blue/30">2</td>
+                                    <td class="p-2 border border-brand-blue/30">$5\text{ kg}$</td>
+                                    <td class="p-2 border border-brand-blue/30">$20\text{ N}$</td>
+                                    <td class="p-2 border border-brand-blue/30"><input type="number" id="lkpd-exp1-a2" placeholder="a = ..." class="w-24 bg-brand-dark p-1 rounded border border-brand-blue/50 text-brand-cyan"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-brand-blue/30">3</td>
+                                    <td class="p-2 border border-brand-blue/30">$5\text{ kg}$</td>
+                                    <td class="p-2 border border-brand-blue/30">$30\text{ N}$</td>
+                                    <td class="p-2 border border-brand-blue/30"><input type="number" id="lkpd-exp1-a3" placeholder="a = ..." class="w-24 bg-brand-dark p-1 rounded border border-brand-blue/50 text-brand-cyan"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-brand-blue/30">4</td>
+                                    <td class="p-2 border border-brand-blue/30">$5\text{ kg}$</td>
+                                    <td class="p-2 border border-brand-blue/30">$40\text{ N}$</td>
+                                    <td class="p-2 border border-brand-blue/30"><input type="number" id="lkpd-exp1-a4" placeholder="a = ..." class="w-24 bg-brand-dark p-1 rounded border border-brand-blue/50 text-brand-cyan"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Experiment 2 Table -->
+                <div class="space-y-2">
+                    <h3 class="font-bold text-xs sm:text-sm text-brand-cyan uppercase">B. Tabel Eksperimen 2: Variasi Massa ($m$) [Gaya Tetap $\Sigma \vec{F} = 20\text{ N}$]</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border border-brand-blue/40">
+                            <thead class="bg-brand-dark text-brand-bright">
+                                <tr>
+                                    <th class="p-2 border border-brand-blue/40">Percobaan</th>
+                                    <th class="p-2 border border-brand-blue/40">Resultan Gaya $\Sigma \vec{F}$ ($\text{N}$)</th>
+                                    <th class="p-2 border border-brand-blue/40">Massa $m$ ($\text{kg}$)</th>
+                                    <th class="p-2 border border-brand-blue/40">Percepatan $\vec{a}$ ($\text{m/s}^2$) [Hitung]</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-brand-blue/30 text-gray-200">
+                                <tr>
+                                    <td class="p-2 border border-brand-blue/30">1</td>
+                                    <td class="p-2 border border-brand-blue/30">$20\text{ N}$</td>
+                                    <td class="p-2 border border-brand-blue/30">$2\text{ kg}$</td>
+                                    <td class="p-2 border border-brand-blue/30"><input type="number" id="lkpd-exp2-a1" placeholder="a = ..." class="w-24 bg-brand-dark p-1 rounded border border-brand-blue/50 text-brand-bright"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-brand-blue/30">2</td>
+                                    <td class="p-2 border border-brand-blue/30">$20\text{ N}$</td>
+                                    <td class="p-2 border border-brand-blue/30">$4\text{ kg}$</td>
+                                    <td class="p-2 border border-brand-blue/30"><input type="number" id="lkpd-exp2-a2" placeholder="a = ..." class="w-24 bg-brand-dark p-1 rounded border border-brand-blue/50 text-brand-bright"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-brand-blue/30">3</td>
+                                    <td class="p-2 border border-brand-blue/30">$20\text{ N}$</td>
+                                    <td class="p-2 border border-brand-blue/30">$5\text{ kg}$</td>
+                                    <td class="p-2 border border-brand-blue/30"><input type="number" id="lkpd-exp2-a3" placeholder="a = ..." class="w-24 bg-brand-dark p-1 rounded border border-brand-blue/50 text-brand-bright"></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-brand-blue/30">4</td>
+                                    <td class="p-2 border border-brand-blue/30">$20\text{ N}$</td>
+                                    <td class="p-2 border border-brand-blue/30">$10\text{ kg}$</td>
+                                    <td class="p-2 border border-brand-blue/30"><input type="number" id="lkpd-exp2-a4" placeholder="a = ..." class="w-24 bg-brand-dark p-1 rounded border border-brand-blue/50 text-brand-bright"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Qualitative Questions -->
+                <div class="space-y-3 text-xs">
+                    <h3 class="font-bold text-xs sm:text-sm text-brand-cyan uppercase">C. Kesimpulan & Analisis Akhir</h3>
+                    <div>
+                        <label class="block font-semibold text-white mb-1">1. Tuliskan kesimpulan hubungan antara $\Sigma \vec{F}$, $m$, dan $\vec{a}$ dalam bentuk kalimat matematis baku!</label>
+                        <textarea id="lkpd-q1" rows="2" placeholder="Tuliskan analisis Anda..." class="w-full bg-brand-dark border border-brand-blue/60 rounded-xl p-2 text-white focus:outline-none focus:border-brand-cyan"></textarea>
+                    </div>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-brand-blue/40 no-print">
+                    <button onclick="checkLKPDCalculations()" class="bg-brand-blue/50 hover:bg-brand-blue text-brand-cyan font-bold px-4 py-2 rounded-xl border border-brand-cyan/40 text-xs">
+                        <i class="fa-solid fa-check-double mr-1"></i> Periksa Kebenaran Perhitungan Tabel
+                    </button>
+
+                    <button onclick="finishModule('lkpd', 'kuis')" class="bg-brand-cyan text-brand-dark font-bold px-6 py-2.5 rounded-xl hover:bg-opacity-90 transition text-xs">
+                        Lanjut ke Kuis Interaktif <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+                <div id="lkpd-feedback" class="hidden no-print text-xs font-bold p-3 rounded-xl border"></div>
+            </div>
+        </section>
+
+        <!-- 8. MISI 7 PAGE: KUIS INTERAKTIF -->
+        <section id="page-kuis" class="w-full hidden space-y-6">
+            <div class="flex items-center justify-between bg-brand-navy/60 p-4 rounded-2xl border border-brand-blue/40">
+                <div>
+                    <span class="text-xs font-bold text-brand-cyan tracking-wider uppercase">Misi 7</span>
+                    <h2 class="text-xl font-bold text-white">Kuis Evaluasi Interaktif (15 Soal)</h2>
+                </div>
+                <button onclick="navigateTo('dashboard')" class="text-xs bg-brand-blue/40 hover:bg-brand-blue text-white px-3 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <div class="bg-brand-navy p-6 rounded-3xl border border-brand-blue/60 shadow-2xl space-y-6">
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs text-gray-300">
+                        <span id="quiz-num-indicator" class="font-bold text-brand-cyan">Soal 1 dari 15</span>
+                        <span id="quiz-percent-indicator" class="font-mono">7%</span>
+                    </div>
+                    <div class="w-full bg-brand-dark rounded-full h-2.5 overflow-hidden border border-brand-blue/40">
+                        <div id="quiz-progress-bar" class="bg-gradient-to-r from-brand-cyan to-brand-bright h-full w-[6.6%] transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <div id="quiz-card" class="bg-brand-dark/70 p-6 rounded-2xl border border-brand-blue/40 space-y-4">
+                    <p id="quiz-question" class="text-white font-semibold text-xs sm:text-base leading-relaxed">
+                        Memuat pertanyaan kuis...
+                    </p>
+
+                    <div id="quiz-options" class="space-y-2.5"></div>
+                </div>
+
+                <div id="quiz-explanation" class="hidden p-4 rounded-2xl border text-xs space-y-1">
+                    <p class="font-bold uppercase tracking-wider text-brand-cyan">Penjelasan & Solusi Fisika:</p>
+                    <p id="quiz-explanation-text" class="text-gray-200"></p>
+                </div>
+
+                <div class="flex justify-between items-center pt-2">
+                    <span class="text-xs text-gray-400">Skor Saat Ini: <strong id="quiz-current-score" class="text-brand-cyan font-mono text-sm">0</strong></span>
+                    <button id="btn-next-quiz" onclick="nextQuizQuestion()" class="hidden bg-brand-cyan text-brand-dark font-extrabold px-6 py-2.5 rounded-xl hover:bg-opacity-90 transition text-xs sm:text-sm">
+                        Soal Berikutnya <i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. MISI 8 PAGE: EVALUASI & REFLEKSI AKHIR -->
+        <section id="page-evaluasi" class="w-full hidden space-y-6">
+            <div class="flex items-center justify-between bg-brand-navy/60 p-4 rounded-2xl border border-brand-blue/40">
+                <div>
+                    <span class="text-xs font-bold text-brand-cyan tracking-wider uppercase">Misi 8</span>
+                    <h2 class="text-xl font-bold text-white">Evaluasi Pembelajaran & Refleksi</h2>
+                </div>
+                <button onclick="navigateTo('dashboard')" class="text-xs bg-brand-blue/40 hover:bg-brand-blue text-white px-3 py-1.5 rounded-lg">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+            </div>
+
+            <!-- Identitas Siswa Report Banner -->
+            <div class="bg-gradient-to-r from-brand-navy via-brand-card to-brand-navy p-6 rounded-3xl border border-brand-cyan/40 shadow-2xl space-y-4 text-center">
+                <div class="inline-block p-4 rounded-full bg-brand-dark border-2 border-brand-cyan my-1">
+                    <i class="fa-solid fa-award text-4xl text-amber-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white">Laporan Hasil Evaluasi Pembelajaran</h3>
+
+                <!-- Dynamic Student Badge Info -->
+                <div class="bg-brand-dark/80 p-3 rounded-xl border border-brand-cyan/30 inline-block text-left text-xs text-gray-300">
+                    <p><strong class="text-brand-cyan">Siswa:</strong> <span id="eval-student-name">--</span></p>
+                    <p><strong class="text-brand-cyan">Kelas / Absen:</strong> <span id="eval-student-class">--</span></p>
+                    <p><strong class="text-brand-cyan">Sekolah:</strong> SMAN 6 Muaro Jambi (Guru: Ibu Nurhidah, S.Pd.)</p>
+                </div>
+
+                <div class="max-w-xs mx-auto bg-brand-dark p-4 rounded-2xl border border-brand-blue/50 my-2">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">NILAI KUIS EVALUASI</p>
+                    <p id="eval-score-display" class="text-5xl font-black text-brand-cyan my-1">0</p>
+                    <p id="eval-score-predicate" class="text-xs font-bold text-emerald-400">Selesaikan kuis untuk melihat nilai</p>
+                </div>
+            </div>
+
+            <!-- Reflection Form -->
+            <div class="bg-brand-navy p-6 rounded-3xl border border-brand-blue/60 shadow-xl space-y-4">
+                <h3 class="text-base sm:text-lg font-bold text-white flex items-center">
+                    <i class="fa-solid fa-pen-fancy text-brand-cyan mr-2"></i> Form Refleksi Diri Siswa
+                </h3>
+
+                <div class="space-y-4 text-xs">
+                    <div>
+                        <label class="block font-semibold text-gray-200 mb-1">1. Apa hal paling utama yang kamu pahami mengenai persamaan $\Sigma \vec{F} = m \cdot \vec{a}$ hari ini?</label>
+                        <textarea id="ref-q1" rows="2" placeholder="Tuliskan refleksi Anda..." class="w-full bg-brand-dark border border-brand-blue/60 rounded-xl p-3 text-white focus:outline-none focus:border-brand-cyan"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-3 border-t border-brand-blue/40">
+                    <button onclick="saveReflection()" class="bg-brand-cyan text-brand-dark font-bold px-6 py-2.5 rounded-xl hover:bg-opacity-90 transition text-xs">
+                        <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Refleksi Saya
+                    </button>
+                    <span id="ref-saved-tag" class="hidden text-xs text-emerald-400 font-bold"><i class="fa-solid fa-check"></i> Refleksi Tersimpan!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD GURU SECTION (DAPAT DIAKSES VIA PIN 1234) -->
+        <section id="page-teacher-dashboard" class="w-full hidden space-y-6">
+            <div class="flex flex-wrap items-center justify-between bg-brand-navy p-5 rounded-2xl border border-amber-500/50 shadow-xl gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400 flex items-center justify-center text-amber-400 text-2xl shadow-lg">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-extrabold text-white">Dashboard Monitoring Guru</h2>
+                        <p class="text-xs text-amber-300">Pengampu: Ibu Nurhidah, S.Pd. • SMAN 6 Muaro Jambi</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" onclick="openEndpointModal()" class="bg-brand-blue/60 hover:bg-brand-blue border border-brand-blue text-brand-cyan text-xs font-bold px-3 py-2 rounded-xl transition">
+                        <i class="fa-solid fa-gear mr-1"></i> Pengaturan GAS Endpoint
+                    </button>
+                    <button type="button" onclick="fetchTeacherData()" class="bg-emerald-500/20 hover:bg-emerald-500/40 border border-emerald-500 text-emerald-300 text-xs font-bold px-3 py-2 rounded-xl transition">
+                        <i class="fa-solid fa-rotate mr-1"></i> Refresh Data
+                    </button>
+                    <button type="button" onclick="exportTeacherDataCSV()" class="bg-amber-500 hover:bg-amber-400 text-brand-dark text-xs font-extrabold px-3 py-2 rounded-xl transition shadow">
+                        <i class="fa-solid fa-file-csv mr-1"></i> Ekspor CSV
+                    </button>
+                    <button type="button" onclick="navigateTo('dashboard')" class="bg-gray-700 hover:bg-gray-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition">
+                        <i class="fa-solid fa-xmark mr-1"></i> Tutup
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Ringkasan -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-brand-navy p-4 rounded-2xl border border-brand-blue/50 text-center">
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">Total Siswa Terdaftar</p>
+                    <p id="teacher-stat-total" class="text-3xl font-black text-white mt-1">0</p>
+                </div>
+                <div class="bg-brand-navy p-4 rounded-2xl border border-brand-blue/50 text-center">
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">Siswa Tuntas (100%)</p>
+                    <p id="teacher-stat-tuntas" class="text-3xl font-black text-emerald-400 mt-1">0</p>
+                </div>
+                <div class="bg-brand-navy p-4 rounded-2xl border border-brand-blue/50 text-center">
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">Belum Tuntas</p>
+                    <p id="teacher-stat-belum" class="text-3xl font-black text-amber-400 mt-1">0</p>
+                </div>
+            </div>
+
+            <!-- Filter & Search Bar -->
+            <div class="bg-brand-navy p-4 rounded-2xl border border-brand-blue/50 flex flex-wrap gap-3 items-center justify-between text-xs">
+                <div class="flex items-center space-x-2 flex-grow max-w-md">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                    <input type="text" id="teacher-search-input" oninput="renderTeacherTable()" placeholder="Cari nama atau kode siswa..." class="w-full bg-brand-dark border border-brand-blue/60 rounded-xl p-2 text-white focus:outline-none focus:border-amber-400">
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-400">Filter Kelas:</span>
+                    <select id="teacher-class-filter" onchange="renderTeacherTable()" class="bg-brand-dark border border-brand-blue/60 rounded-xl p-2 text-white focus:outline-none">
+                        <option value="ALL">Semua Kelas</option>
+                        <option value="XI IPA 1">XI IPA 1</option>
+                        <option value="XI IPA 2">XI IPA 2</option>
+                        <option value="XI IPA 3">XI IPA 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tabel Data Rekapitulasi Siswa -->
+            <div class="bg-brand-navy p-4 rounded-2xl border border-brand-blue/50 overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-brand-dark text-amber-300">
+                        <tr>
+                            <th class="p-2.5 border-b border-brand-blue/40">Kode</th>
+                            <th class="p-2.5 border-b border-brand-blue/40">Nama Siswa</th>
+                            <th class="p-2.5 border-b border-brand-blue/40">Kelas</th>
+                            <th class="p-2.5 border-b border-brand-blue/40">Progres</th>
+                            <th class="p-2.5 border-b border-brand-blue/40">Kuis</th>
+                            <th class="p-2.5 border-b border-brand-blue/40">Status</th>
+                            <th class="p-2.5 border-b border-brand-blue/40">Update Terakhir</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teacher-table-body" class="divide-y divide-brand-blue/30 text-gray-200">
+                        <tr>
+                            <td colspan="7" class="p-4 text-center text-gray-400 italic">Belum ada data rekapan siswa yang dimuat.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL AUTHENTICATION GURU -->
+    <div id="modal-teacher-auth" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-brand-navy border-2 border-amber-500 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl relative">
+            <button type="button" onclick="closeTeacherAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center space-y-2">
+                <div class="w-12 h-12 bg-amber-500/20 text-amber-400 border border-amber-500/40 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Verifikasi Akses Guru</h3>
+                <p class="text-xs text-gray-300">Masukkan PIN Keamanan Guru untuk membuka Dashboard Pemantauan.</p>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1">PIN Akses Guru:</label>
+                <input type="password" id="input-teacher-pin" placeholder="Masukkan PIN (Default: 1234)" class="w-full bg-brand-dark border border-brand-blue/60 focus:border-amber-400 rounded-xl p-3 text-center text-white text-lg font-mono tracking-widest focus:outline-none">
+            </div>
+            <div id="teacher-pin-error" class="hidden text-center text-xs text-red-400 font-bold">PIN Salah! Silakan coba lagi.</div>
+            <button type="button" onclick="verifyTeacherPIN()" class="w-full bg-amber-500 hover:bg-amber-400 text-brand-dark font-black p-3 rounded-xl transition text-xs shadow-lg">
+                MASUK DASHBOARD GURU
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIG GOOGLE APPS SCRIPT ENDPOINT -->
+    <div id="modal-gas-endpoint" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-brand-navy border-2 border-brand-cyan rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl relative">
+            <button type="button" onclick="closeEndpointModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="space-y-1">
+                <h3 class="text-lg font-bold text-white flex items-center">
+                    <i class="fa-solid fa-link text-brand-cyan mr-2"></i> Pengaturan Endpoint Google Sheets
+                </h3>
+                <p class="text-xs text-gray-300">Tempelkan URL Web App Google Apps Script (GAS) agar progres seluruh siswa otomatis tersimpan di Google Sheets milik Anda.</p>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-brand-cyan mb-1">URL Web App Google Apps Script:</label>
+                <input type="url" id="input-gas-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-brand-dark border border-brand-blue/60 focus:border-brand-cyan rounded-xl p-3 text-xs text-white focus:outline-none font-mono">
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button type="button" onclick="closeEndpointModal()" class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-4 py-2 rounded-xl">Batal</button>
+                <button type="button" onclick="saveGASEndpoint()" class="bg-brand-cyan text-brand-dark font-bold text-xs px-5 py-2 rounded-xl hover:bg-opacity-90">Simpan URL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-navy/80 border-t border-brand-blue/40 py-4 px-4 text-center text-xs text-gray-400 no-print mt-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                <strong class="text-white">NEWTON LAB</strong> — Media Pembelajaran Fisika Interaktif
+            </div>
+            <div>
+                SMAN 6 Muaro Jambi • Guru Pengampu: <span class="text-brand-cyan font-semibold">Ibu Nurhidah, S.Pd.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* Global State Engine */
+        const appState = {
+            student: {
+                code: '',
+                name: '',
+                classInfo: '',
+                noAbsen: ''
+            },
+            completedModules: new Set(),
+            currentModule: 'landing',
+            sim: {
+                mass: 5,
+                fKanan: 20,
+                fKiri: 5,
+                fGesek: 0,
+                x: 30,
+                v: 0,
+                a: 3,
+                isRunning: false,
+                lastTime: null,
+                logs: []
+            },
+            game: {
+                level: 1,
+                score: 0,
+                currentQIndex: 0
+            },
+            quiz: {
+                currentIndex: 0,
+                score: 0,
+                correctAnswersCount: 0,
+                answers: [],
+                completed: false
+            },
+            gasEndpoint: localStorage.getItem('NEWTON_LAB_GAS_URL') || '',
+            teacherData: []
+        };
+
+        /* Safe Math rendering helper */
+        function renderPhysicsMath(targetElement) {
+            try {
+                const el = targetElement || document.body;
+                if (typeof renderMathInElement === 'function') {
+                    renderMathInElement(el, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false},
+                            {left: '\\(', right: '\\)', display: false},
+                            {left: '\\[', right: '\\]', display: true}
+                        ],
+                        ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+                        throwOnError: false
+                    });
+                }
+            } catch (e) {
+                console.warn("KaTeX rendering warning:", e);
+            }
+        }
+
+        /* Teacher Auth Functions */
+        function openTeacherAuthModal() {
+            try {
+                const modal = document.getElementById('modal-teacher-auth');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    document.getElementById('input-teacher-pin').value = '';
+                    document.getElementById('teacher-pin-error').classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Error opening teacher modal:", err);
+            }
+        }
+
+        function closeTeacherAuthModal() {
+            const modal = document.getElementById('modal-teacher-auth');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function verifyTeacherPIN() {
+            const pinInput = document.getElementById('input-teacher-pin').value.trim();
+            if (pinInput === '1234') {
+                closeTeacherAuthModal();
+                const pages = ['landing', 'dashboard', 'misi1', 'misi2', 'simulasi', 'soal', 'game', 'lkpd', 'kuis', 'evaluasi'];
+                pages.forEach(p => {
+                    const el = document.getElementById(`page-${p}`);
+                    if (el) el.classList.add('hidden');
+                });
+                const teacherPage = document.getElementById('page-teacher-dashboard');
+                if (teacherPage) teacherPage.classList.remove('hidden');
+                fetchTeacherData();
+            } else {
+                document.getElementById('teacher-pin-error').classList.remove('hidden');
+            }
+        }
+
+        function openEndpointModal() {
+            document.getElementById('modal-gas-endpoint').classList.remove('hidden');
+            document.getElementById('input-gas-url').value = appState.gasEndpoint;
+        }
+
+        function closeEndpointModal() {
+            document.getElementById('modal-gas-endpoint').classList.add('hidden');
+        }
+
+        function saveGASEndpoint() {
+            const url = document.getElementById('input-gas-url').value.trim();
+            appState.gasEndpoint = url;
+            localStorage.setItem('NEWTON_LAB_GAS_URL', url);
+            closeEndpointModal();
+            alert("URL Google Apps Script Endpoint berhasil disimpan!");
+        }
+
+        function fetchTeacherData() {
+            if (!appState.gasEndpoint) {
+                renderTeacherTable();
+                return;
+            }
+
+            fetch(appState.gasEndpoint)
+                .then(res => res.json())
+                .then(data => {
+                    appState.teacherData = data || [];
+                    renderTeacherTable();
+                })
+                .catch(err => {
+                    console.warn("Gagal mengambil data dari GAS:", err);
+                    renderTeacherTable();
+                });
+        }
+
+        function renderTeacherTable() {
+            const tbody = document.getElementById('teacher-table-body');
+            const search = document.getElementById('teacher-search-input').value.toLowerCase();
+            const classFilter = document.getElementById('teacher-class-filter').value;
+
+            let filtered = appState.teacherData.filter(item => {
+                const matchSearch = item.studentName.toLowerCase().includes(search) || item.studentCode.toLowerCase().includes(search);
+                const matchClass = classFilter === 'ALL' || item.classInfo === classFilter;
+                return matchSearch && matchClass;
+            });
+
+            document.getElementById('teacher-stat-total').innerText = filtered.length;
+            document.getElementById('teacher-stat-tuntas').innerText = filtered.filter(i => i.progressPercent === 100).length;
+            document.getElementById('teacher-stat-belum').innerText = filtered.filter(i => i.progressPercent < 100).length;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Tidak ada data siswa ditemukan.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(s => `
+                <tr>
+                    <td class="p-2.5 font-mono text-brand-cyan">${s.studentCode}</td>
+                    <td class="p-2.5 font-bold text-white">${s.studentName}</td>
+                    <td class="p-2.5">${s.classInfo}</td>
+                    <td class="p-2.5 font-bold">${s.progressPercent}%</td>
+                    <td class="p-2.5 text-amber-400 font-bold">${s.quizScore}</td>
+                    <td class="p-2.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${s.progressPercent === 100 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'}">${s.statusText}</span></td>
+                    <td class="p-2.5 text-gray-400 text-[10px]">${s.lastUpdated || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportTeacherDataCSV() {
+            if (appState.teacherData.length === 0) {
+                alert("Belum ada data siswa untuk diekspor!");
+                return;
+            }
+
+            let csv = "Kode Siswa,Nama Siswa,Kelas,Misi Selesai,Total Misi,Progres (%),Nilai Kuis,Status,Waktu Update\n";
+            appState.teacherData.forEach(s => {
+                csv += `"${s.studentCode}","${s.studentName}","${s.classInfo}",${s.completedCount},${s.totalModules},${s.progressPercent},${s.quizScore},"${s.statusText}","${s.lastUpdated}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `REKAP_NEWTON_LAB_SMAN6_${new Date().toISOString().slice(0,10)}.csv`);
+            a.click();
+        }
+
+        function sendDataToBackend() {
+            if (!appState.gasEndpoint || !appState.student.code) return;
+
+            const payload = {
+                studentCode: appState.student.code,
+                studentName: appState.student.name,
+                classInfo: appState.student.classInfo,
+                completedCount: appState.completedModules.size,
+                totalModules: 8,
+                progressPercent: Math.round((appState.completedModules.size / 8) * 100),
+                quizScore: appState.quiz.score
+            };
+
+            fetch(appState.gasEndpoint, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(e => console.warn("Sync offline:", e));
+        }
+
+        /* Standard App Logic */
+        function startAppWithProfile() {
+            const codeInput = document.getElementById('init-student-code').value.trim();
+            const nameInput = document.getElementById('init-student-name').value.trim();
+            const classInput = document.getElementById('init-student-class').value.trim();
+            const noInput = document.getElementById('init-student-no').value.trim();
+
+            if (!codeInput || !nameInput) {
+                alert("Mohon isi Kode Unik Siswa dan Nama Lengkap!");
+                return;
+            }
+
+            appState.student.code = codeInput;
+            appState.student.name = nameInput;
+            appState.student.classInfo = classInput || "XI SMA";
+            appState.student.noAbsen = noInput || "-";
+
+            document.getElementById('nav-student-name').innerText = appState.student.name;
+            document.getElementById('nav-student-class').innerText = `${appState.student.classInfo} | ${appState.student.code}`;
+            document.getElementById('dash-student-banner').innerText = `Siswa: ${appState.student.name} (${appState.student.classInfo}) | Kode: ${appState.student.code}`;
+            
+            document.getElementById('page-landing').classList.add('hidden');
+            document.getElementById('app-header').classList.remove('hidden');
+            
+            sendDataToBackend();
+            navigateTo('dashboard');
+        }
+
+        function navigateTo(pageId) {
+            const pages = ['landing', 'dashboard', 'misi1', 'misi2', 'simulasi', 'soal', 'game', 'lkpd', 'kuis', 'evaluasi', 'teacher-dashboard'];
+            pages.forEach(p => {
+                const el = document.getElementById(`page-${p}`);
+                if (el) el.classList.add('hidden');
+            });
+
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                appState.currentModule = pageId;
+            }
+
+            if (pageId === 'simulasi') setTimeout(resizeSimCanvas, 100);
+            else if (pageId === 'misi2') drawConceptGraphs();
+            else if (pageId === 'game' && appState.game.level === 1) loadGameLevel(1);
+            else if (pageId === 'kuis' && appState.quiz.currentIndex === 0) loadQuizQuestion(0);
+            else if (pageId === 'evaluasi') updateEvaluasiScreen();
+
+            setTimeout(() => {
+                if (targetPage) renderPhysicsMath(targetPage);
+            }, 60);
+
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu) mobileMenu.classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu) mobileMenu.classList.toggle('hidden');
+        }
+
+        function finishModule(currentModId, nextModId) {
+            appState.completedModules.add(currentModId);
+            updateProgressUI();
+            sendDataToBackend();
+            if (nextModId) navigateTo(nextModId);
+        }
+
+        function updateProgressUI() {
+            const totalModules = 8;
+            const completedCount = appState.completedModules.size;
+            const percent = Math.round((completedCount / totalModules) * 100);
+
+            document.getElementById('header-progress-bar').style.width = `${percent}%`;
+            document.getElementById('header-progress-text').innerText = `${percent}%`;
+            document.getElementById('dashboard-progress-text').innerText = `${completedCount} / ${totalModules} Modul Selesai (${percent}%)`;
+        }
+
+        /* Simplified Canvas Simulator Mechanics */
+        function updateSimParameters() {
+            appState.sim.mass = parseFloat(document.getElementById('slider-mass').value);
+            appState.sim.fKanan = parseFloat(document.getElementById('slider-fkanan').value);
+            appState.sim.fKiri = parseFloat(document.getElementById('slider-fkiri').value);
+            appState.sim.fGesek = parseFloat(document.getElementById('slider-fgesek').value);
+
+            document.getElementById('val-mass').innerText = `${appState.sim.mass} kg`;
+            document.getElementById('val-fkadan').innerText = `${appState.sim.fKanan} N`;
+            document.getElementById('val-fkiri').innerText = `${appState.sim.fKiri} N`;
+            document.getElementById('val-fgesek').innerText = `${appState.sim.fGesek} N`;
+
+            let rawFNet = appState.sim.fKanan - appState.sim.fKiri;
+            let netF = rawFNet > 0 ? Math.max(0, rawFNet - appState.sim.fGesek) : Math.min(0, rawFNet + appState.sim.fGesek);
+            appState.sim.a = netF / appState.sim.mass;
+
+            document.getElementById('out-res-f').innerText = `${netF >= 0 ? '+' : ''}${netF.toFixed(1).replace('.', ',')} N`;
+            document.getElementById('out-mass').innerText = `${appState.sim.mass.toFixed(1).replace('.', ',')} kg`;
+            document.getElementById('out-acc').innerText = `${Math.abs(appState.sim.a).toFixed(2).replace('.', ',')} m/s²`;
+            
+            drawSimCanvas();
+        }
+
+        function resizeSimCanvas() {
+            const canvas = document.getElementById('sim-canvas');
+            if (!canvas) return;
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+            updateSimParameters();
+        }
+
+        function drawSimCanvas() {
+            const canvas = document.getElementById('sim-canvas');
+            if (!canvas || !canvas.getContext) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        window.onload = function () {
+            window.addEventListener('resize', resizeSimCanvas);
+            updateSimParameters();
+            setTimeout(() => renderPhysicsMath(document.body), 300);
+        };
+    </script>
+</body>
+</html>
